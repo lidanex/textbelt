@@ -1,47 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="TextBelt : Free texting API">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <title>TextBelt</title>
+  <meta name="description" content="Free texting API">
 
-    <title>TextBelt</title>
-  </head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <body>
+</head>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/lidanex/textbelt">View on GitHub</a>
+<body>
 
-          <h1 id="project_title">TextBelt</h1>
-          <h2 id="project_tagline">Free texting API</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/lidanex/textbelt/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/lidanex/textbelt/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
+  <div class="wrapper">
+    <header>
+      <h1 class="title">TextBelt</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Free texting API</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/lidanex/textbelt/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/lidanex/textbelt/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/lidanex/textbelt" class="code">View TextBelt on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h3>
 <a name="textbelt" class="anchor" href="#textbelt"><span class="octicon octicon-link"></span></a>TextBelt</h3>
 
-<p>TextBelt is a texting API that uses carrier-specific gateways to deliver your text messages for free.  This is nice for a low-cost texting app or testing without running down your Twilio balance.</p>
+<p>TextBelt (<a href="http://textbelt.com">http://textbelt.com</a>) is an outgoing SMS API that uses carrier-specific gateways to deliver your text messages for free, and without ads.  The service is fairly reliable and has sent over 100,000 texts.</p>
 
-<p>Usage is dead simple:</p>
+<p>Send a text with a simple POST request:</p>
 
-<pre><code>$ curl http://textbelt.com/text \
+<pre><code>$ curl -X POST http://textbelt.com/text \
    -d number=972527022463 \
-   -d "message=I sent this message for free with textbelt.com"
+   -d "message=hello שלום"
 </code></pre>
+
+<p><code>number</code> and <code>message</code> parameters are required.</p>
 
 <h3>
 <a name="success-and-failure" class="anchor" href="#success-and-failure"><span class="octicon octicon-link"></span></a>Success and Failure</h3>
@@ -57,25 +64,92 @@
 </code></pre>
 
 <h3>
+<a name="usage-as-a-module" class="anchor" href="#usage-as-a-module"><span class="octicon octicon-link"></span></a>Usage as a module</h3>
+
+<p>Though this repository contains an express server so you may run your own
+instance of the web app, you may also use it to send text messages in your
+project. The only requirement is unix/posix <code>sendmail</code>, used to forward the message.</p>
+
+<p>For example, to send a text using the default settings:</p>
+
+<pre><code>var text = require('textbelt');
+
+text.send('9491234567', 'A sample text message!', undefined, function(err) {
+  if (err) {
+    console.log(err);
+  }
+});
+</code></pre>
+
+<p>You can also supply a region (valid choices are <code>us</code>, <code>intl</code>, or <code>canada</code>)</p>
+
+<pre><code>var text = require('textbelt');
+
+// Canada
+text.send('9491234567', 'A sample text message!', 'canada', function(err) {
+...
+});
+
+// International
+text.send('1119491234567', 'Bonjour!', 'intl', function(err) {
+...
+});
+
+</code></pre>
+
+<h3>
+<a name="canadian-and-international-endpoints" class="anchor" href="#canadian-and-international-endpoints"><span class="octicon octicon-link"></span></a>Canadian and International endpoints</h3>
+
+<p>The /text endpoint supports U.S. phone numbers (and parts of Canada).</p>
+
+<p>For Canadian texts, curl <code>http://textbelt.com/canada</code>.</p>
+
+<p>For international texts, curl <code>http://textbelt.com/intl</code>.</p>
+
+<p>Canadian and international support may not be complete.  Refer to the list of supported carriers.</p>
+
+<h3>
 <a name="notes-and-limitations" class="anchor" href="#notes-and-limitations"><span class="octicon octicon-link"></span></a>Notes and Limitations</h3>
 
 <ul>
 <li><p>IP addresses are limited to 75 texts per day.  Phone numbers are limited to 3 texts every 3 minutes.  If you need increased limits, please contact <a href="mailto:admin@textbelt.com">admin@textbelt.com</a>.</p></li>
 <li><p>Some carriers may deliver text messages from "<a href="mailto:txt@textbelt.com">txt@textbelt.com</a>"</p></li>
-<li><p>We support the following U.S. providers: Alltel, Ameritech, AT&amp;T Wireless, Boost, CellularOne, Cingular, Edge Wireless, Sprint PCS, Telus Mobility, T-Mobile, Metro PCS, Nextel, O2, Orange, Qwest, Rogers Wireless, US Cellular, Verizon, Virgin Mobile.</p></li>
+<li><p>Supported U.S. carriers: Alltel, Ameritech, AT&amp;T Wireless, Boost, CellularOne, Cingular, Edge Wireless, Sprint PCS, Telus Mobility, T-Mobile, Metro PCS, Nextel, O2, Orange, Qwest, Rogers Wireless, US Cellular, Verizon, Virgin Mobile.</p></li>
+<li><p>Supported U.S. and Canadian carriers (/canada):  3 River Wireless, ACS Wireless, AT&amp;T, Alltel, BPL Mobile, Bell Canada, Bell Mobility, Bell Mobility (Canada), Blue Sky Frog, Bluegrass Cellular, Boost Mobile, Carolina West Wireless, Cellular One, Cellular South, Centennial Wireless, CenturyTel, Cingular (Now AT&amp;T), Clearnet, Comcast, Corr Wireless Communications, Dobson, Edge Wireless, Fido, Golden Telecom, Helio, Houston Cellular, Idea Cellular, Illinois Valley Cellular, Inland Cellular Telephone, MCI, MTS, Metro PCS, Metrocall, Metrocall 2-way, Microcell, Midwest Wireless, Mobilcomm, Nextel, OnlineBeep, PCS One, President's Choice, Public Service Cellular, Qwest, Rogers AT&amp;T Wireless, Rogers Canada, Satellink, Solo Mobile, Southwestern Bell, Sprint, Sumcom, Surewest Communicaitons, T-Mobile, Telus, Tracfone, Triton, US Cellular, US West, Unicel, Verizon, Virgin Mobile, Virgin Mobile Canada, West Central Wireless, Western Wireless</p></li>
+<li><p>Supported international carriers (/intl):  Chennai RPG Cellular, Chennai Skycell / Airtel, Comviq, DT T-Mobile, Delhi Aritel, Delhi Hutch, Dutchtone / Orange-NL, EMT, Escotel, German T-Mobile, Goa BPLMobil, Golden Telecom, Gujarat Celforce, JSM Tele-Page, Kerala Escotel, Kolkata Airtel, Kyivstar, LMT, Lauttamus Communication, Maharashtra BPL Mobile, Maharashtra Idea Cellular, Manitoba Telecom Systems, Meteor, MiWorld, Mobileone, Mobilfone, Mobility Bermuda, Mobistar Belgium, Mobitel Tanzania, Mobtel Srbija, Movistar, Mumbai BPL Mobile, Netcom, Ntelos, O2, O2 (M-mail), One Connect Austria, OnlineBeep, Optus Mobile, Orange, Orange Mumbai, Orange NL / Dutchtone, Oskar, P&amp;T Luxembourg, Personal Communication, Pondicherry BPL Mobile, Primtel, SCS-900, SFR France, Safaricom, Satelindo GSM, Simple Freedom, Smart Telecom, Southern LINC, Sunrise Mobile, Surewest Communications, Swisscom, T-Mobile Austria, T-Mobile Germany, T-Mobile UK, TIM, TSR Wireless, Tamil Nadu BPL Mobile, Tele2 Latvia, Telefonica Movistar, Telenor, Teletouch, Telia Denmark, UMC, Uraltel, Uttar Pradesh Escotel, Vessotel, Vodafone Italy, Vodafone Japan, Vodafone UK, Wyndtell</p></li>
 </ul>
-      </section>
+
+<h3>
+<a name="license-mit" class="anchor" href="#license-mit"><span class="octicon octicon-link"></span></a>License (MIT)</h3>
+
+<p>TextBelt
+Copyright (C) 2012 by Ian Webster</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </article>
+      </div>
     </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/lidanex" class="avatar"><img src="https://avatars1.githubusercontent.com/u/9257463?v=2&amp;s=60" width="48" height="48"></a> <a href="https://github.com/lidanex">lidanex</a> maintains <a href="https://github.com/lidanex/textbelt">TextBelt</a></p>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">TextBelt maintained by <a href="https://github.com/lidanex">lidanex</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
 
-    
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/lidanex/textbelt/tarball/master" class="tar">tar</a><a href="https://github.com/lidanex/textbelt/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
 
-  </body>
+  
+</body>
 </html>
